@@ -6,6 +6,8 @@
     <title>J Community</title>
     <!-- โหลด FontAwesome สำหรับไอคอนดิสคอร์ด -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- โหลด API ของ Google reCAPTCHA สำหรับตรวจสอบมนุษย์ -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <style>
         * {
             margin: 0;
@@ -33,7 +35,6 @@
             transition: opacity 0.5s ease, transform 0.5s ease;
         }
 
-        /* แอนิเมชันวงกลมหมุน */
         .spinner {
             width: 50px;
             height: 50px;
@@ -62,7 +63,6 @@
             50% { opacity: 1; }
         }
 
-        /* คลาสสิกลบหน้าโหลด */
         .fade-out {
             opacity: 0 !important;
             pointer-events: none;
@@ -84,7 +84,6 @@
             overflow-x: hidden;
         }
 
-        /* กล่องดีไซน์หลักกระจกฝ้า (Glassmorphism) */
         .card-container {
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(15px);
@@ -99,14 +98,12 @@
             transition: all 0.4s ease-in-out;
         }
 
-        /* ซ่อนหน้าสมัครบัญชีไว้ก่อนตอนแรก */
         .hidden {
             display: none !important;
             opacity: 0;
             transform: scale(0.95);
         }
 
-        /* ดีไซน์หน้าแรก (Welcome) */
         .welcome-title {
             font-size: 1.6rem;
             color: #0f172a;
@@ -124,7 +121,6 @@
             display: block;
         }
 
-        /* ปุ่มเริ่มต้นใช้งาน */
         .start-btn {
             width: 100%;
             padding: 16px;
@@ -144,7 +140,6 @@
             box-shadow: 0 8px 25px rgba(14, 165, 233, 0.45);
         }
 
-        /* ดีไซน์หน้าสมัครบัญชี (Register) */
         .top-title-btn {
             width: 100%;
             padding: 14px;
@@ -187,6 +182,13 @@
             box-shadow: 0 0 12px rgba(14, 165, 233, 0.25);
         }
 
+        /* จัดตำแหน่งกล่องติ๊กถูกของ Google ให้พอดีฟอร์ม */
+        .captcha-group {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
         .confirm-btn {
             width: 100%;
             padding: 14px;
@@ -199,7 +201,7 @@
             cursor: pointer;
             box-shadow: 0 5px 15px rgba(14, 165, 233, 0.3);
             transition: all 0.3s;
-            margin-top: 10px;
+            margin-top: 5px;
         }
 
         .confirm-btn:hover {
@@ -226,7 +228,6 @@
             padding: 0 10px;
         }
 
-        /* ปุ่ม Discord */
         .discord-btn {
             width: 100%;
             padding: 14px;
@@ -252,7 +253,6 @@
             box-shadow: 0 6px 18px rgba(88, 101, 242, 0.4);
         }
 
-        /* ส่วนของ Footer เครดิต */
         .footer-credit {
             margin-top: 25px;
             font-size: 0.85rem;
@@ -292,6 +292,12 @@
                 <input type="text" id="email" placeholder="example@mail.com">
             </div>
 
+            <!-- กล่องติ๊กถูกยืนยันตัวตนของ Google reCAPTCHA -->
+            <div class="captcha-group">
+                <div class="g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqy9H71UMIEGNQ_MXjiZKhI"></div>
+            </div>
+
+            <!-- ปุ่มยืนยันการสมัครด้านล่างสุด พร้อมระบบดักเช็กความปลอดภัย -->
             <button type="submit" class="confirm-btn">ยืนยันการสมัคร</button>
         </form>
 
@@ -312,7 +318,6 @@
     </div>
 
     <script>
-        // ระบบปิดหน้าโหลดเข้าเว็บอัตโนมัติ (หน่วงเวลาไว้ที่ 2 วินาทีเพื่อให้เห็นเอฟเฟกต์สวยๆ)
         window.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 const loadingScreen = document.getElementById('loading-screen');
@@ -330,13 +335,16 @@
             }, 50);
         }
 
-        // ระบบตรวจสอบข้อมูลอย่างละเอียดตรงปุ่มยืนยันการสมัคร
+        // ระบบตรวจสอบข้อมูลอย่างละเอียดล่างสุดปุ่มสมัครบัญชี
         function handleSubmit(event) {
             event.preventDefault();
             
             const name = document.getElementById('name').value.trim();
             const email = document.getElementById('email').value.trim();
             const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            
+            // ดึงค่าผลลัพธ์การติ๊กถูกจาก Google reCAPTCHA
+            const captchaResponse = grecaptcha.getResponse();
 
             // 1. ตรวจสอบชื่อผู้ใช้งาน
             if (name === "") {
@@ -358,7 +366,13 @@
                 return;
             }
 
-            // 3. ผ่านการตรวจสอบทั้งหมด
+            // 3. ตรวจสอบอย่างดีว่าผู้ใช้งานได้ติ๊กถูกกล่องของ Google หรือไม่
+            if (captchaResponse.length === 0) {
+                alert("❌ การสมัครไม่ผ่าน: กรุณาติ๊กยืนยันว่าคุณคือมนุษย์ (Google reCAPTCHA)!");
+                return;
+            }
+
+            // 4. ผ่านการตรวจสอบทั้งหมดอย่างสมบูรณ์แบบ
             alert("✅ สมัครสมาชิก J Community สำเร็จเรียบร้อยแล้ว!");
         }
     </script>
