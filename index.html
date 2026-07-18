@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>สมัครบัญชี - OMMUNIFY</title>
+    <title>ยินดีต้อนรับ - J Community</title>
     <!-- โหลด FontAwesome สำหรับไอคอนดิสคอร์ด -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -22,27 +22,74 @@
                 radial-gradient(circle at 80% 20%, #e0f2fe 0%, transparent 50%),
                 radial-gradient(circle at 20% 80%, #bae6fd 0%, transparent 50%);
             display: flex;
-            flex-direction: column; /* จัดเรียงเป็นแนวตั้งเพื่อวางฟอร์มและเครดิตด้านล่าง */
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             padding: 20px;
+            overflow-x: hidden;
         }
 
-        /* กล่องฟอร์มดีไซน์กระจกฝ้า (Glassmorphism) */
-        .form-container {
+        /* กล่องดีไซน์หลักกระจกฝ้า (Glassmorphism) */
+        .card-container {
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
             border: 1px solid rgba(14, 165, 233, 0.25);
-            padding: 40px 30px;
+            padding: 45px 30px;
             border-radius: 28px;
             width: 100%;
             max-width: 420px;
             box-shadow: 0 15px 35px rgba(14, 165, 233, 0.15);
             text-align: center;
+            transition: all 0.4s ease-in-out;
         }
 
-        /* ปุ่มสมัครบัญชี (ปุ่มแรกด้านบนสุด) */
+        /* ซ่อนหน้าสมัครบัญชีไว้ก่อนตอนแรก */
+        .hidden {
+            display: none !important;
+            opacity: 0;
+            transform: scale(0.95);
+        }
+
+        /* ดีไซน์หน้าแรก (Welcome) */
+        .welcome-title {
+            font-size: 1.6rem;
+            color: #0f172a;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+        
+        .brand-name {
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #0ea5e9, #0284c7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 40px;
+            display: block;
+        }
+
+        /* ปุ่มเริ่มต้นใช้งาน */
+        .start-btn {
+            width: 100%;
+            padding: 16px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #ffffff;
+            background: linear-gradient(135deg, #0ea5e9, #0284c7);
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(14, 165, 233, 0.3);
+            transition: all 0.3s;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(14, 165, 233, 0.45);
+        }
+
+        /* ดีไซน์หน้าสมัครบัญชี (Register) */
         .top-title-btn {
             width: 100%;
             padding: 14px;
@@ -56,7 +103,6 @@
             box-shadow: 0 6px 15px rgba(14, 165, 233, 0.25);
         }
 
-        /* ส่วนของฟอร์มกรอกข้อมูล */
         .input-group {
             text-align: left;
             margin-bottom: 20px;
@@ -86,7 +132,6 @@
             box-shadow: 0 0 12px rgba(14, 165, 233, 0.25);
         }
 
-        /* ปุ่มกดยืนยัน (อยู่ล่างสุดของฟอร์ม) */
         .confirm-btn {
             width: 100%;
             padding: 14px;
@@ -107,7 +152,6 @@
             box-shadow: 0 8px 22px rgba(14, 165, 233, 0.45);
         }
 
-        /* เส้นคั่นกลาง */
         .divider {
             margin: 25px 0;
             display: flex;
@@ -127,7 +171,7 @@
             padding: 0 10px;
         }
 
-        /* ปุ่มยืนยันผ่าน Discord สีน้ำเงินดิสคอร์ด */
+        /* ปุ่ม Discord */
         .discord-btn {
             width: 100%;
             padding: 14px;
@@ -153,7 +197,7 @@
             box-shadow: 0 6px 18px rgba(88, 101, 242, 0.4);
         }
 
-        /* ข้อความลิขสิทธิ์อัปเดต 2026 ด้านล่างฟอร์ม */
+        /* ส่วนของ Footer เครดิต */
         .footer-credit {
             margin-top: 25px;
             font-size: 0.85rem;
@@ -165,24 +209,30 @@
 </head>
 <body>
 
-    <div class="form-container">
-        <!-- ปุ่มสมัครบัญชีด้านบน -->
+    <!-- ================= หน้าที่ 1: หน้าแรกต้อนรับ ================= -->
+    <div id="welcome-page" class="card-container">
+        <h1 class="welcome-title">ยินดีต้อนรับเข้าสู่</h1>
+        <span class="brand-name">𝗝 𝗖𝗼𝗺𝗺𝘂𝗻𝗶𝘁𝘆</span>
+        
+        <!-- ปุ่มเริ่มต้นใช้งานอยู่ด้านล่าง -->
+        <button class="start-btn" onclick="goToRegister()">เริ่มต้นใช้งาน</button>
+    </div>
+
+    <!-- ================= หน้าที่ 2: หน้าสมัครบัญชี (ซ่อนไว้ตอนแรก) ================= -->
+    <div id="register-page" class="card-container hidden">
         <button class="top-title-btn">สมัครบัญชี</button>
 
         <form onsubmit="handleSubmit(event)">
-            <!-- ช่องกรอก: ชื่อ -->
             <div class="input-group">
                 <label for="name">ชื่อผู้ใช้งาน</label>
                 <input type="text" id="name" required placeholder="กรอกชื่อของคุณ">
             </div>
 
-            <!-- ช่องกรอก: อีเมล -->
             <div class="input-group">
                 <label for="email">อีเมล</label>
                 <input type="email" id="email" required placeholder="example@mail.com">
             </div>
 
-            <!-- ปุ่มกดยืนยัน -->
             <button type="submit" class="confirm-btn">ยืนยันการสมัคร</button>
         </form>
 
@@ -191,19 +241,31 @@
         </div>
 
         <div class="social-group">
-            <!-- ปุ่มยืนยันผ่าน Discord ลิงก์ OAuth2 ของคุณ -->
             <a href="https://discord.com/oauth2/authorize?client_id=1525854058835869807&response_type=code&redirect_uri=https%3A%2F%2Fthanaduangnamo-sketch.github.io%2Fshop.github.io%2F&scope=identify+messages.read" class="discord-btn">
                 <i class="fa-brands fa-discord"></i> ยืนยันผ่าน Discord
             </a>
         </div>
     </div>
 
-    <!-- ข้อความอัปเดตล่างสุดปี 2026 -->
+    <!-- ข้อความเครดิตล่างสุดปี 2026 -->
     <div class="footer-credit">
-        © 2026 OMMUNIFY. All rights reserved.
+        © 2026 J Community. All rights reserved.
     </div>
 
     <script>
+        // ฟังก์ชันสำหรับกดปุ่มแล้วสลับจากหน้าแรกไปหน้าสมัครบัญชี
+        function goToRegister() {
+            const welcomePage = document.getElementById('welcome-page');
+            const registerPage = document.getElementById('register-page');
+            
+            welcomePage.classList.add('hidden');
+            
+            setTimeout(() => {
+                registerPage.classList.remove('hidden');
+                document.title = "สมัครบัญชี - J Community";
+            }, 50);
+        }
+
         function handleSubmit(event) {
             event.preventDefault();
             alert("ส่งข้อมูลการสมัครเรียบร้อย!");
