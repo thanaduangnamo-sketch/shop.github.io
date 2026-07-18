@@ -1,11 +1,532 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="th">
 <head>
-    <title>My First Website</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>J SHOP - Store</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+        }
+
+        body {
+            /* 🌌 พื้นหลังมืดสนิท เรืองแสงสีม่วง-ชมพูไซเบอร์ */
+            background: radial-gradient(circle at 50% 30%, rgba(147, 51, 234, 0.15) 0%, rgba(219, 39, 119, 0.05) 35%, #050508 70%);
+            background-color: #050508;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* 👑 แถบเมนูด้านบน (Navbar) */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 60px;
+            background: rgba(5, 5, 8, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+            height: 70px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .brand-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-logo {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #7c3aed, #db2777);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 800;
+            box-shadow: 0 0 15px rgba(124, 58, 237, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .brand-text-wrapper {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand-title {
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            color: #ffffff;
+            line-height: 1;
+        }
+
+        .brand-subtitle {
+            font-size: 8px;
+            letter-spacing: 2px;
+            color: #a78bfa;
+            text-transform: uppercase;
+            margin-top: 4px;
+            font-weight: 600;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 28px;
+            align-items: center;
+        }
+
+        .nav-item {
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 13.5px;
+            font-weight: 500;
+            transition: color 0.2s;
+            cursor: pointer;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            color: #ffffff;
+        }
+
+        .theme-toggle-btn {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #7c3aed 50%, #db2777 50%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+        }
+
+        /* 📦 กล่องดีไซน์ตรงกลางหน้าจอ (Responsive) */
+        .main-content {
+            flex: 1;
+            width: 100%;
+            max-width: 1240px;
+            margin: 120px auto 40px auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-container {
+            position: relative;
+            width: 100%;
+            max-width: 480px;
+            height: 580px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card-glow-outline {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 1px solid rgba(147, 51, 234, 0.2);
+            border-radius: 30px;
+            transform: rotate(-6deg);
+            pointer-events: none;
+        }
+
+        .card-glow-outline-2 {
+            position: absolute;
+            width: 95%;
+            height: 100%;
+            border: 1px solid rgba(219, 39, 119, 0.15);
+            border-radius: 30px;
+            transform: rotate(3deg);
+            pointer-events: none;
+        }
+
+        .content-card {
+            background: #09090e; 
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            border-radius: 24px;
+            width: 100%;
+            height: 100%;
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.8);
+            position: relative;
+            z-index: 2;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .shop-banner-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+        }
+
+        .card-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(5, 5, 8, 0.2) 0%, rgba(5, 5, 8, 0.9) 55%, #09090e 100%);
+            z-index: 2;
+        }
+
+        /* 📝 ฟอร์มล็อกอิน / สมัครสมาชิก */
+        .login-form-container {
+            position: relative;
+            z-index: 3;
+            padding: 30px;
+            width: 100%;
+        }
+
+        .form-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            text-align: center;
+            background: linear-gradient(to right, #ffffff, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .form-subtitle {
+            font-size: 12px;
+            color: #94a3b8;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 14px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #cbd5e1;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .input-group input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            padding: 10px 14px;
+            color: #ffffff;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .input-group input:focus {
+            border-color: #7c3aed;
+            background: rgba(255, 255, 255, 0.07);
+        }
+
+        .btn-submit-login {
+            width: 100%;
+            background: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            box-shadow: 0 4px 20px rgba(124, 58, 237, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .btn-submit-login:hover {
+            box-shadow: 0 0 25px rgba(219, 39, 119, 0.5);
+            transform: translateY(-1px);
+        }
+
+        /* ลิงก์สลับหน้าฟอร์ม */
+        .switch-form-text {
+            text-align: center;
+            font-size: 13px;
+            color: #94a3b8;
+            margin-top: 15px;
+        }
+
+        .switch-form-text span {
+            color: #a78bfa;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        /* 🔔 ระบบแจ้งเตือนถาวรกึ่งโปร่งใสมุมขวาบน */
+        .notification-area {
+            position: fixed;
+            top: 85px; /* อยู่ใต้ Navbar พอดี */
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 320px;
+            pointer-events: none; /* เพื่อไม่ให้บังการคลิกส่วนอื่น */
+        }
+
+        /* กล่องแจ้งเตือนเริ่มต้น (ซ่อนตัวอยู่ และโปร่งแสงถาวร) */
+        .toast-notif {
+            background: rgba(9, 9, 14, 0.75); /* สีดำกึ่งโปร่งใสถาวร */
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-left: 4px solid #7c3aed; /* เส้นสีม่วงเรืองแสง */
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            transform: translateX(120%); /* ซ่อนไว้นอกจอทางขวา */
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: auto; /* ให้กดปิดได้ */
+        }
+
+        /* คลาสที่จะสั่งให้กล่องเด้งโผล่ออกมา */
+        .toast-notif.show {
+            transform: translateX(0);
+        }
+
+        .notif-icon {
+            font-size: 18px;
+        }
+
+        .notif-content {
+            flex: 1;
+        }
+
+        .notif-title {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 2px;
+        }
+
+        .notif-desc {
+            font-size: 12px;
+            color: #94a3b8;
+            line-height: 1.4;
+        }
+
+        .notif-close {
+            color: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            font-size: 14px;
+            background: none;
+            border: none;
+        }
+        
+        .notif-close:hover {
+            color: #ffffff;
+        }
+
+        /* ⭐️ Footer */
+        .footer-bar {
+            background: #050508;
+            border-top: 1px solid rgba(255, 255, 255, 0.01);
+            padding: 20px 0;
+            text-align: center;
+            width: 100%;
+            margin-top: auto;
+        }
+
+        .footer-text {
+            font-size: 13px;
+            color: #334155;
+        }
+
+        /* 📱 Mobile Responsive */
+        @media (max-width: 768px) {
+            .navbar { padding: 10px 20px; }
+            .nav-links { display: none; }
+            .notification-area { width: calc(100% - 40px); right: 20px; }
+        }
+    </style>
 </head>
 <body>
-    <h1>ยินดีต้อนรับสู่เว็บไซต์ของฉัน!</h1>
-    <p>กำลังทดสอบระบบ GitHub Pages</p>
+
+    <!-- 👑 Navbar -->
+    <nav class="navbar">
+        <div class="nav-left">
+            <div class="brand-section">
+                <div class="brand-logo">🔮</div>
+                <div class="brand-text-wrapper">
+                    <span class="brand-title">J SHOP</span>
+                    <span class="brand-subtitle">ANIME • STREAM • SHOP</span>
+                </div>
+            </div>
+        </div>
+        <div class="nav-links">
+            <a class="nav-item active">ร้านค้า</a>
+            <a class="nav-item">บริการ</a>
+            <a class="nav-item">เติมเงิน</a>
+            <a class="nav-item">แดชบอร์ด</a>
+            <a class="nav-item">เอกสาร</a>
+        </div>
+        <div class="nav-right">
+            <div class="theme-toggle-btn"></div>
+        </div>
+    </nav>
+
+    <!-- 🔔 พื้นที่แสดงการแจ้งเตือนถาวรกึ่งโปร่งใส (ขวาบน) -->
+    <div class="notification-area" id="notificationArea"></div>
+
+    <!-- 📦 กล่องฟอร์มล็อกอิน และ สมัครสมาชิก ตรงกลางหน้าจอ -->
+    <main class="main-content">
+        <div class="card-container">
+            <div class="card-glow-outline"></div>
+            <div class="card-glow-outline-2"></div>
+            
+            <div class="content-card">
+                <img src="https://cdn.discordapp.com/attachments/1524404124890829012/1526585139856150729/ChatGPT_Image_12_.._2569_21_03_17.png?ex=6a5c2bf3&is=6a5ada73&hm=33125c706d34069601c34fccc1967d6a79d82f2c9700bc50c40e6913f151b1d3&" alt="J SHOP Banner" class="shop-banner-img">
+                <div class="card-overlay"></div>
+                
+                <div class="login-form-container">
+                    <div id="formContent">
+                        <!-- โหลดฟอร์มเข้าสู่ระบบเป็นค่าเริ่มต้น -->
+                        <h2 class="form-title">ยินดีต้อนรับกลับมา</h2>
+                        <p class="form-subtitle">กรุณาเข้าสู่ระบบเพื่อดำเนินการต่อ</p>
+                        <form onsubmit="actionLogin(event)">
+                            <div class="input-group">
+                                <label>อีเมลผู้ใช้งาน</label>
+                                <input type="email" id="loginEmail" placeholder="example@email.com" required>
+                            </div>
+                            <div class="input-group">
+                                <label>รหัสผ่าน</label>
+                                <input type="password" id="loginPass" placeholder="••••••••" required>
+                            </div>
+                            <button type="submit" class="btn-submit-login">เข้าสู่ระบบ</button>
+                        </form>
+                        <p class="switch-form-text">ยังไม่มีบัญชีใช่ไหม? <span onclick="toggleForm('register')">สมัครสมาชิกที่นี่</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer-bar">
+        <p class="footer-text">© 2026 J SHOP. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // ฟังก์ชันสลับระหว่างฟอร์ม เข้าสู่ระบบ กับ สมัครสมาชิก
+        function toggleForm(type) {
+            const formContent = document.getElementById('formContent');
+            if (type === 'register') {
+                formContent.innerHTML = `
+                    <h2 class="form-title">สร้างบัญชีใหม่</h2>
+                    <p class="form-subtitle">สมัครสมาชิกเพื่อใช้บริการร้าน J SHOP</p>
+                    <form onsubmit="actionRegister(event)">
+                        <div class="input-group">
+                            <label>ชื่อผู้ใช้งาน</label>
+                            <input type="text" id="regUser" placeholder="Username" required>
+                        </div>
+                        <div class="input-group">
+                            <label>อีเมล</label>
+                            <input type="email" id="regEmail" placeholder="example@email.com" required>
+                        </div>
+                        <div class="input-group">
+                            <label>รหัสผ่าน</label>
+                            <input type="password" id="regPass" placeholder="••••••••" required>
+                        </div>
+                        <button type="submit" class="btn-submit-login" style="background: linear-gradient(135deg, #db2777 0%, #7c3aed 100%);">สร้างบัญชี</button>
+                    </form>
+                    <p class="switch-form-text">มีบัญชีอยู่แล้ว? <span onclick="toggleForm('login')">เข้าสู่ระบบที่นี่</span></p>
+                `;
+            } else {
+                formContent.innerHTML = `
+                    <h2 class="form-title">ยินดีต้อนรับกลับมา</h2>
+                    <p class="form-subtitle">กรุณาเข้าสู่ระบบเพื่อดำเนินการต่อ</p>
+                    <form onsubmit="actionLogin(event)">
+                        <div class="input-group">
+                            <label>อีเมลผู้ใช้งาน</label>
+                            <input type="email" id="loginEmail" placeholder="example@email.com" required>
+                        </div>
+                        <div class="input-group">
+                            <label>รหัสผ่าน</label>
+                            <input type="password" id="loginPass" placeholder="••••••••" required>
+                        </div>
+                        <button type="submit" class="btn-submit-login">เข้าสู่ระบบ</button>
+                    </form>
+                    <p class="switch-form-text">ยังไม่มีบัญชีใช่ไหม? <span onclick="toggleForm('register')">สมัครสมาชิกที่นี่</span></p>
+                `;
+            }
+        }
+
+        // ระบบเรียกแสดงการแจ้งเตือนมุมขวาบน (กึ่งโปร่งใสถาวร)
+        function showNotification(title, desc, icon = '🎉', borderCol = '#7c3aed') {
+            const area = document.getElementById('notificationArea');
+            const notif = document.createElement('div');
+            notif.className = 'toast-notif';
+            notif.style.borderLeftColor = borderCol;
+            
+            notif.innerHTML = `
+                <div class="notif-icon">${icon}</div>
+                <div class="notif-content">
+                    <div class="notif-title">${title}</div>
+                    <div class="notif-desc">${desc}</div>
+                </div>
+                <button class="notif-close" onclick="this.parentElement.remove()">✕</button>
+            `;
+            
+            area.appendChild(notif);
+            
+            // สั่งให้เด้งออกมาจากด้านขวา
+            setTimeout(() => {
+                notif.classList.add('show');
+            }, 50);
+
+            // ซ่อนและเคลียร์ตัวเองอัตโนมัติใน 5 วินาที
+            setTimeout(() => {
+                notif.classList.remove('show');
+                setTimeout(() => notif.remove(), 400);
+            }, 5000);
+        }
+
+        // เมื่อกดปุ่มเข้าสู่ระบบ
+        function actionLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            // สั่งแจ้งเตือนมุมขวาเมื่อเข้าสู่ระบบสำเร็จ
+            showNotification('เข้าสู่ระบบสำเร็จ', `ยินดีต้อนรับคุณ ${email} เข้าสู่ระบบ J SHOP เเบบถาวร`, '🔑', '#34a853');
+        }
+
+        // เมื่อกดปุ่มสร้างบัญชีใหม่
+        function actionRegister(e) {
+            e.preventDefault();
+            const user = document.getElementById('regUser').value;
+            // สั่งแจ้งเตือนมุมขวาเมื่อสร้างบัญชีสำเร็จ
+            showNotification('สร้างบัญชีสำเร็จ!', `บัญชีผู้ใช้ "${user}" ได้รับการลงทะเบียนเรียบร้อยแล้ว`, '✨', '#db2777');
+            // รีเซ็ตกลับไปหน้าล็อกอินอัตโนมัติ
+            setTimeout(() => toggleForm('login'), 1500);
+        }
+    </script>
 </body>
 </html>
