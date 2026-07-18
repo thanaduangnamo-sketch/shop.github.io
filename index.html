@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ยินดีต้อนรับ - J Community</title>
+    <title>J Community</title>
     <!-- โหลด FontAwesome สำหรับไอคอนดิสคอร์ด -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -14,7 +14,62 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        /* จัดหน้าจอให้อยู่กึ่งกลางเป๊ะ ๆ ทั้งแนวตั้งและแนวนอน */
+        /* ================= ดีไซน์หน้าโหลดเข้าเว็บ (Loading Screen) ================= */
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #ffffff;
+            background-image: 
+                radial-gradient(circle at 80% 20%, #e0f2fe 0%, transparent 50%),
+                radial-gradient(circle at 20% 80%, #bae6fd 0%, transparent 50%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        /* แอนิเมชันวงกลมหมุน */
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(14, 165, 233, 0.2);
+            border-top: 5px solid #0ea5e9;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        .loading-text {
+            font-size: 1rem;
+            color: #0284c7;
+            font-weight: 600;
+            letter-spacing: 1px;
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        /* คลาสสิกลบหน้าโหลด */
+        .fade-out {
+            opacity: 0 !important;
+            pointer-events: none;
+            transform: scale(1.05);
+        }
+
+        /* ================= ดีไซน์หน้าเว็บหลัก ================= */
         body {
             min-height: 100vh;
             background-color: #ffffff;
@@ -209,28 +264,32 @@
 </head>
 <body>
 
+    <!-- ================= หน้าที่ 0: หน้าโหลดเข้าเว็บ (Loading Screen) ================= -->
+    <div id="loading-screen">
+        <div class="spinner"></div>
+        <div class="loading-text">กำลังโหลดระบบ...</div>
+    </div>
+
     <!-- ================= หน้าที่ 1: หน้าแรกต้อนรับ ================= -->
     <div id="welcome-page" class="card-container">
         <h1 class="welcome-title">ยินดีต้อนรับเข้าสู่</h1>
         <span class="brand-name">𝗝 𝗖𝗼𝗺𝗺𝘂𝗻𝗶𝘁𝘆</span>
-        
-        <!-- ปุ่มเริ่มต้นใช้งานอยู่ด้านล่าง -->
         <button class="start-btn" onclick="goToRegister()">เริ่มต้นใช้งาน</button>
     </div>
 
-    <!-- ================= หน้าที่ 2: หน้าสมัครบัญชี (ซ่อนไว้ตอนแรก) ================= -->
+    <!-- ================= หน้าที่ 2: หน้าสมัครบัญชี ================= -->
     <div id="register-page" class="card-container hidden">
         <button class="top-title-btn">สมัครบัญชี</button>
 
         <form onsubmit="handleSubmit(event)">
             <div class="input-group">
                 <label for="name">ชื่อผู้ใช้งาน</label>
-                <input type="text" id="name" required placeholder="กรอกชื่อของคุณ">
+                <input type="text" id="name" placeholder="กรอกชื่อของคุณ">
             </div>
 
             <div class="input-group">
                 <label for="email">อีเมล</label>
-                <input type="email" id="email" required placeholder="example@mail.com">
+                <input type="text" id="email" placeholder="example@mail.com">
             </div>
 
             <button type="submit" class="confirm-btn">ยืนยันการสมัคร</button>
@@ -253,22 +312,54 @@
     </div>
 
     <script>
-        // ฟังก์ชันสำหรับกดปุ่มแล้วสลับจากหน้าแรกไปหน้าสมัครบัญชี
+        // ระบบปิดหน้าโหลดเข้าเว็บอัตโนมัติ (หน่วงเวลาไว้ที่ 2 วินาทีเพื่อให้เห็นเอฟเฟกต์สวยๆ)
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                const loadingScreen = document.getElementById('loading-screen');
+                loadingScreen.classList.add('fade-out');
+            }, 2000); 
+        });
+
         function goToRegister() {
             const welcomePage = document.getElementById('welcome-page');
             const registerPage = document.getElementById('register-page');
-            
             welcomePage.classList.add('hidden');
-            
             setTimeout(() => {
                 registerPage.classList.remove('hidden');
                 document.title = "สมัครบัญชี - J Community";
             }, 50);
         }
 
+        // ระบบตรวจสอบข้อมูลอย่างละเอียดตรงปุ่มยืนยันการสมัคร
         function handleSubmit(event) {
             event.preventDefault();
-            alert("ส่งข้อมูลการสมัครเรียบร้อย!");
+            
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            // 1. ตรวจสอบชื่อผู้ใช้งาน
+            if (name === "") {
+                alert("❌ การสมัครไม่ผ่าน: กรุณากรอกชื่อผู้ใช้งานของคุณ!");
+                return;
+            }
+            if (name.length < 4) {
+                alert("❌ การสมัครไม่ผ่าน: กรุณากรอกชื่อผู้ใช้งานอย่างน้อย 4 ตัวอักษร!");
+                return;
+            }
+
+            // 2. ตรวจสอบอีเมล
+            if (email === "") {
+                alert("❌ การสมัครไม่ผ่าน: กรุณากรอกอีเมลของคุณ!");
+                return;
+            }
+            if (!emailPattern.test(email)) {
+                alert("❌ การสมัครไม่ผ่าน: กรุณากรอกอีเมลให้ถูกต้องตามรูปแบบ (เช่น example@mail.com)!");
+                return;
+            }
+
+            // 3. ผ่านการตรวจสอบทั้งหมด
+            alert("✅ สมัครสมาชิก J Community สำเร็จเรียบร้อยแล้ว!");
         }
     </script>
 </body>
